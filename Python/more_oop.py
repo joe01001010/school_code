@@ -15,7 +15,7 @@ class Animals:
         return f"{self.name} is sleeping."
     
     def move(self):
-        return f"{self.name} is moving."
+        return f"The animal, {self.name}, is moving."
     
 class Dog(Animals):
     def __init__(self, species, name, age, weight, breed):
@@ -41,6 +41,9 @@ class GoldenRetriever(Dog):
 
     def bark(self):
         return f"The {self.species} named {self.name} is barking."
+    
+    def move(self):
+        return f"The {self.species} named {self.name} is moving."
 
 
 def main():
@@ -50,22 +53,8 @@ def main():
     second_turle = Turle('Turtle', 'Speedy', 3, 15, 'Brown')
     golden_retriever = GoldenRetriever('Dog', 'Buddy', 4, 60, 'Golden Retriever', 'Golden')
 
-    print(golden_retriever)
-    print(golden_retriever.bark())
-
-    print(first_dog)
-    print(second_dog)
-    print(first_dog.eat())
-    print(second_dog.sleep())
     print(first_dog.move())
-    print(second_dog.bark())
-    print()
-    print(first_turle)
-    print(second_turle)
-    print(first_turle.eat())
-    print(second_turle.sleep())
-    print(first_turle.move())
-    print(second_turle.action())
+    print(golden_retriever.move())
 
 
 if __name__ == "__main__":
