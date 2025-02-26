@@ -10,7 +10,6 @@ def main():
         file.close()
     else:
         print("File was already correct.")
-    file.close()
 
 if __name__ == "__main__":
     main()
