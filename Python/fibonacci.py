@@ -1,3 +1,6 @@
+import sys
+sys.setrecursionlimit(1000000)
+
 def return_fibonacci_number(number, memo={}):
     if number in memo:
         return memo[number]
@@ -15,8 +18,7 @@ def return_fibonacci_number(number, memo={}):
 
 
 def main():
-    num = 999
-    print(return_fibonacci_number(num))
+    print(return_fibonacci_number(10000))
 
 
 if __name__ == "__main__":
