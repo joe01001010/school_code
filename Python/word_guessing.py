@@ -17,7 +17,6 @@ def main():
     parsed_response = parse_response(response=get_response)
     save_to_excel(data=parsed_response, file=output_file)
     random_word = get_random_word(file=output_file)
-    print(random_word)
     word_guessing_game(random_word)
 
 
