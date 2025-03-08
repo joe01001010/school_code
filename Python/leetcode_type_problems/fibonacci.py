@@ -18,7 +18,7 @@ def return_fibonacci_number(number, memo={}):
 
 
 def main():
-    print(return_fibonacci_number(10000))
+    print(return_fibonacci_number(10))
 
 
 if __name__ == "__main__":
