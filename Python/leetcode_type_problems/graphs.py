@@ -9,7 +9,7 @@ class Graph:
     graph = {
         'f': ['g', 'i'],
         'g': ['h'],
-        'h': [],
+        'h': ['g'],
         'i': ['g', 'k'],
         'j': ['i'],
         'k': []
@@ -67,12 +67,6 @@ def does_path_exist(graph, src, dest):
 
 
 def main(myGraph):
-    depth_first_print_iterative(myGraph, 'f')
-    print()
-    depth_first_print_recursive(myGraph, 'f')
-    print()
-    breadth_first_print_iterative(myGraph, 'f')
-
     print(does_path_exist(myGraph, 'j', 'f'))
 
 
