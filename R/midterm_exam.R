@@ -1,5 +1,5 @@
-#install.packages("nycflights13")
-#install.packages("dplyr")
+install.packages("nycflights13")
+install.packages("dplyr")
 library(nycflights13)
 library(dplyr)
 data(flights)
@@ -10,6 +10,7 @@ delayed_flights = flights %>%
   filter(dep_delay >= 720, arr_delay >= 1080)
 
 print(delayed_flights)
+# A tibble: 3 x 19
 #year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time arr_delay carrier flight tailnum origin
 #<int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>     <dbl> <chr>    <int> <chr>   <chr> 
 # 1  2013     1     9      641            900      1301     1242           1530      1272 HA          51 N384HA  JFK   
@@ -196,15 +197,15 @@ print(correlation_of_numeric_values_matrix)
 mean_value = 1150
 standard_deviation = 105
 q2_a_distribution = qnorm(0.6, mean = mean_value, sd = standard_deviation)
-q2_b_distribution = qnorm(0.8, mean = mean_value, sd = standard_deviation)
-q2_c_distribution = qnorm(0.95, mean = mean_value, sd = standard_deviation)
+q2_b_distribution = qnorm(1-0.8, mean = mean_value, sd = standard_deviation)
+q2_c_distribution = qnorm(1-0.95, mean = mean_value, sd = standard_deviation)
 q2_d_distribution = qnorm(0.99, mean = mean_value, sd = standard_deviation)
 print(q2_a_distribution)
 #[1] 1176.601
 print(q2_b_distribution)
-#[1] 1238.37
+#[1] 1061.63
 print(q2_c_distribution)
-#[1] 1322.71
+#[1] 977.2904
 print(q2_d_distribution)
 #[1] 1394.267
 
@@ -215,13 +216,13 @@ print(q2_d_distribution)
 sample_mean = 105
 standard_deviation = 10
 q3_a_distribution = pnorm(120, mean = sample_mean, sd = standard_deviation)
-q3_b_distribution = pnorm(80, mean = sample_mean, sd = standard_deviation)
+q3_b_distribution = 1-pnorm(80, mean = sample_mean, sd = standard_deviation)
 q3_c_distribution = pnorm(115, mean = sample_mean, sd = standard_deviation) - pnorm(90, mean = sample_mean, sd = standard_deviation)
 q3_d_distribution = pnorm(110, mean = sample_mean, sd = standard_deviation) - pnorm(75, mean = sample_mean, sd = standard_deviation)
 print(q3_a_distribution)
 #[1] 0.9331928
 print(q3_b_distribution)
-#[1] 0.006209665
+#[1] 0.9937903
 print(q3_c_distribution)
 #[1] 0.7745375
 print(q3_d_distribution)
