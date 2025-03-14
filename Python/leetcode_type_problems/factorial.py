@@ -14,12 +14,12 @@ def factorial(number):
         return int(math.sqrt(2 * math.pi * number) * ((number / math.e) ** number))
     else:
         factorial = 1
-        for i in range(1, number  + 1):
+        for i in range(1, number + 1):
             factorial *= i
         return factorial
 
 def main():
-    num1 = 21
+    num1 = 5
     print(f"Factorial of {num1} is {factorial(num1)}")
     print(f"The length of the factorial of {num1} is {len(str(factorial(num1)))} characters")
 
