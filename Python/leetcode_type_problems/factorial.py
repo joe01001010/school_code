@@ -1,5 +1,3 @@
-import math
-
 def factorial(number):
     factorial = 1
     if number == 0 or number == 1:
