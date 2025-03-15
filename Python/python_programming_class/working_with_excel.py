@@ -25,12 +25,12 @@ def main():
     print(f"Active sheet: {active_sheet}")
     print()
 
-    for column in range(1,3):
+    for column in range(1,7):
         for row in range(ord('A'), ord('C')):
-            cell = f'{chr(row)}{row}'
+            cell = f'{chr(row)}{column}'
             active_sheet[cell] = f'Hello from test code {row}'
 
-    print(f"Number of rows in {active_sheet}: {active_sheet.max_row}")
+    print(f"Number of rows in {active_sheet} : {active_sheet.max_row}")
     print(f"Number of columns in {active_sheet}: {active_sheet.max_column}")
     print()
 
