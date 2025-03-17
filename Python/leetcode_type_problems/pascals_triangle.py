@@ -11,7 +11,7 @@ def pascals_triangle(rows):
     
 
 def main():
-    print(pascals_triangle(300))
+    print(pascals_triangle(3))
 
 if __name__ == "__main__":
     main()
