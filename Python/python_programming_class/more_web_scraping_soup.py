@@ -30,7 +30,25 @@ def main():
         print(attribute['href'])
     print()
 
-    
+    first_h1 = soup.find(id='one')
+    print(first_h1)
+    print()
+
+    links = soup.find_all('a', href=True)
+    http_links = [link['href'] for link in links if link['href'].startswith('http')]
+    print(http_links)
+    print()
+
+    title_elements = soup.find_all('title')
+    print(title_elements)
+    print()
+
+    paragraphs = soup.find_all('p', class_ = 'first')
+    for paragraph in paragraphs:
+        print(paragraph.get_text())
+    print()
+
+            
 
 
 if __name__ == '__main__':
