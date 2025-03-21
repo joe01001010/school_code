@@ -24,9 +24,6 @@ def main():
     browser.quit()
 
 
-
-
-
 def extract_weather_data(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
 
