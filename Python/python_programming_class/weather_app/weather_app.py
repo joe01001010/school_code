@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import bs4
-import time
 from flask import Flask, request, render_template, session
 from flask_session import Session
 
@@ -53,7 +52,6 @@ def generate_weather_info(city, state, country):
 
     try:
         driver.get(url)
-        print(driver.title)
         WebDriverWait(driver, 10).until(
            EC.presence_of_element_located((By.ID, "wob_wc")))
         soup = bs4.BeautifulSoup(driver.page_source, 'html.parser')
