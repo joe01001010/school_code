@@ -31,17 +31,17 @@ def form():
             city=session['city'],
             state=session['state'],
             country=session['country'],
-            temperature=weather_info.get('temperature', 'N/A'),
+            temperature_f=weather_info.get('temperature', 'N/A'),
+            temperature_c=round((int(weather_info.get('temperature', '0')) - 32) * 5/9, 2),
             precipitation=weather_info.get('precipitation', 'N/A'),
             humidity=weather_info.get('humidity', 'N/A'),
-            wind=weather_info.get('wind', 'N/A')
+            wind_speed=weather_info.get('wind', 'N/A')
         )
     return render_template('weather_app_template.html')
 
 def generate_weather_info(city, state, country):
     query = f"{city}+{state}+{country}+weather".replace(' ', '+')
     url = f"https://www.google.com/search?q={query}"
-    print(f"Fetching weather data from: {url}")
 
     driver = uc.Chrome()
     weather_data = {
@@ -54,9 +54,8 @@ def generate_weather_info(city, state, country):
     try:
         driver.get(url)
         print(driver.title)
-        print(driver.find_element(By.CLASS_NAME, 'vk_bk TylWce SGNhVe'))
-        input("Press enter to close browser")
-        time.sleep(5)
+        WebDriverWait(driver, 10).until(
+           EC.presence_of_element_located((By.ID, "wob_wc")))
         soup = bs4.BeautifulSoup(driver.page_source, 'html.parser')
 
         temperature = soup.find("span", {"id": "wob_tm"})

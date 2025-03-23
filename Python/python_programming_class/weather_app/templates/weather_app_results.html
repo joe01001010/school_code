@@ -50,13 +50,16 @@
     </style>
 </head>
 <body>
-    <h2>Submission Successful!</h2>
-    <div class="result">
-        <p><strong>First Name:</strong> {{ first_name }}</p>
-        <p><strong>Last Name:</strong> {{ last_name }}</p>
-        <p><strong>City:</strong> {{ city }}</p>
-        <p><strong>State/Governorate:</strong> {{ state }}</p>
-        <p><strong>Country:</strong> {{ country }}</p>
+    <h2>Welcome {{ first_name }} {{ last_name }}.</h2>
+    <div class="welcome_message">
+    </div>
+    <div class="weather">
+        <h3>Weather for {{ city }}, {{ state }}, {{ country }}:</h3>
+        <p><strong>Temperature F:</strong> {{ temperature_f }}F</p>
+        <p><strong>Temperature C:</strong> {{ temperature_c }}C</p>
+        <p><strong>Precipitation:</strong> {{ precipitation }}</p>
+        <p><strong>Humidity:</strong> {{ humidity }}</p>
+        <p><strong>Wind Speed:</strong> {{ wind_speed }}</p>
     </div>
     <a href="/">&larr; Back To Form</a>
 </body>
