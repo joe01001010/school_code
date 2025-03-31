@@ -21,7 +21,6 @@ def form():
         session['country'] = request.form.get('country')
 
         weather_info = generate_weather_info(session['city'], session['state'], session['country'])
-        print(weather_info)
 
         return render_template(
             'weather_app_results.html',
@@ -43,6 +42,7 @@ def generate_weather_info(city, state, country):
     url = f"https://www.google.com/search?q={query}"
 
     driver = uc.Chrome()
+    
     weather_data = {
         "temperature": "N/A",
         "precipitation": "N/A",
@@ -77,4 +77,4 @@ def generate_weather_info(city, state, country):
     return weather_data
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003, threaded=False)
+    app.run(debug=True, port=5000, threaded=False)
