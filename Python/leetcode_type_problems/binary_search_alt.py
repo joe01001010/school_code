@@ -4,7 +4,7 @@ def main():
     total_list = first_list + second_list
     left = 0
     right = len(total_list) - 1
-    while left < right:
+    while left <= right:
         mid = (left + right) // 2
         print(f"Left: {left}")
         print(f"Right: {right}")
