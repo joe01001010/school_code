@@ -1,4 +1,5 @@
 import numpy as np
+from functools import reduce
 
 
 def incremenet_by_three(number):
@@ -7,6 +8,8 @@ def incremenet_by_three(number):
 
 def main():
     list_one = [1,2,3,4,5]
+    print(list_one)
+
     list_one_incremenented = list(map(incremenet_by_three, list_one))
     print(list_one_incremenented)
 
@@ -19,6 +22,9 @@ def main():
 
     cubed_even_numbers = tuple(filter(lambda y: y % 2 == 0, map(lambda x: x ** 3, list_one_incremented_lambda_numpy)))
     print(cubed_even_numbers)
+
+    sum_of_cubed_even_numbers = reduce(lambda x, y: x + y, cubed_even_numbers)
+    print(sum_of_cubed_even_numbers)
 
 
 if __name__ == '__main__':
