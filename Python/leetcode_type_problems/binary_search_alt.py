@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def main():
     first_list = [False] * 24
     second_list = [True] * 2

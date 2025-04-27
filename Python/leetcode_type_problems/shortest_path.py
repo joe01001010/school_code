@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def shortest_path(graph, nodeA, nodeB):
     # Initialize the visited nodes on a graph to a set for O(1) lookup times
     visited = set()

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def debug_wrapper_function(func):
     def debug(graph, start):
         print(f"Executing {func.__name__}")

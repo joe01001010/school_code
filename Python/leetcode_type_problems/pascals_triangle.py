@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def pascals_triangle(rows):
     triangle = []
     for i in range(rows):
