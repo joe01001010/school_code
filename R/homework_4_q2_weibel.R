@@ -12,6 +12,9 @@ Daily_Sale_After_Discount_Program = c(50011.75,
                                       50092.99,
                                       50095.04,
                                       50080.53)
+# Setting paired to TRUE because the data is dependent on one another.
+# As in each before value is paired with an after value in regards to
+# the discount
 t_test_result = t.test(Daily_Sale_Before_Discount_Program,
                        Daily_Sale_After_Discount_Program,
                        paired = TRUE)
