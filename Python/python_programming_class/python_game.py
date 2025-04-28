@@ -10,15 +10,16 @@ def main():
     white = (255,255,255)
 
     pygame.init()
+    pygame.display.set_caption("Shapes")
+
     screen = pygame.display.set_mode((400, 300))
     background_color = (127,127,127)
     screen.fill(background_color)
-    pygame.display.set_caption("Shapes")
 
-    pygame.draw.circle(screen, red, (200,150), 60, 2)
+    pygame.draw.circle(screen, red, (200,150), 60, 1)
     pygame.draw.circle(screen, green, (200,150), 80, 2)
-    pygame.draw.circle(screen, blue, (200,150), 100, 2)
-
+    pygame.draw.circle(screen, blue, (200,150), 100, 3)
+    pygame.draw.circle(screen, white, (200,150), 120, 4)
 
     pygame.display.update()
     pygame.image.save(screen, "circles.png")
