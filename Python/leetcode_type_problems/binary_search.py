@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def binary_search(num_list, num_to_find):
     left = 0
     right = len(num_list) - 1

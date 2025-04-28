@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def smallest_island(grid):
     visited = set()
     smallest = 99999

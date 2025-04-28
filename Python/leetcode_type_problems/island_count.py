@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def explore_island(grid, row, column, visited):
     row_inbounds = 0 <= row and row < len(grid)
     column_ibounds = 0 <= column and column < len(grid[1])
