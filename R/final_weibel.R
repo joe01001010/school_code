@@ -6,44 +6,55 @@ alzheimer_data = read.csv('Alzheimer.csv')
 
 
 # a.1)
-a1_table = table(alzheimer_data$DrugType, alzheimer_data$Gender)
-chisq_test_a1 = chisq.test(a1_table)
+alzheimer_data$GenderNumeric = ifelse(alzheimer_data$Gender == 'm', 1, 0)
+a1_aov = aov(GenderNumeric ~ DrugType, data = alzheimer_data)
+summary(a1_aov)
+#Df Sum Sq Mean Sq F value   Pr(>F)    
+#DrugType      2  11.93   5.966   28.49 5.55e-12 ***
+#  Residuals   278  58.21   0.209                     
+#---
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-print(chisq_test_a1)
-#Pearson's Chi-squared test
+print(a1_aov)
+#Call:
+#  aov(formula = GenderNumeric ~ DrugType, data = alzheimer_data)
 #
-#data:  a1_table
-#X-squared = 47.8, df = 2, p-value = 4.171e-11
+#Terms:
+#  DrugType Residuals
+#Sum of Squares  11.93179  58.21055
+#Deg. of Freedom        2       278
+#
+#Residual standard error: 0.457592
+#Estimated effects may be unbalanced
 
-chisq_test_a1$observed
-#f   m
-#A  40 103
-#B  49  26
-#C  46  17
+#This test shows a p value lower than 0.05 so its oklay to say that the proportion
+# of males to females differs significantly across the different types of drugs
 
-#chisq_test_a1$expected
-#f        m
-#A 68.70107 74.29893
-#B 36.03203 38.96797
-#C 30.26690 32.7331
+shapiro.test(resid(a1_aov))
+#Shapiro-Wilk normality test
+#
+#data:  resid(a1_aov)
+#W = 0.88364, p-value = 8.114e-14
 
-# This test shows that the p value is significantly less than 0.05
-# This test also shows that there was a disproportionate amount of some drugs
-# given to one gender and a disproportionate amount of another drug given to a
-# different gender. For examople, the drug that is being tested was given 
-# more to men than women and women received a lot more of the arthritis drug
+install.packages('car')
+library(car)
+leveneTest(GenderNumeric ~ DrugType, data = alzheimer_data)
+#Levene's Test for Homogeneity of Variance (center = median)
+#       Df F value Pr(>F)
+#group   2  0.6529 0.5213
+#      278
 
-min(chisq_test_a1$expected)
-#[1] 30.2669
-print(chisq_test_a1$expected)
-#f        m
-#A 68.70107 74.29893
-#B 36.03203 38.96797
-#C 30.26690 32.73310
+oneway.test(GenderNumeric ~ DrugType, data = alzheimer_data)
+#One-way analysis of means (not assuming equal variances)
+#
+#data:  GenderNumeric and DrugType
+#F = 28.742, num df = 2.0, denom df = 141.7, p-value = 3.329e-11
 
-# This is my check to ensure my assumption is met, all values should be 
-# greater than 5 telling me that the sample size is large enough to use the
-# chi-squared test for approximation.
+# These are my tests to ensure the data is valid so I can trust the results
+# from the aov I did on the data. The shapiro test is to ensure normality
+# of the data. The levene test is to ensure homogeneity of the data, or to make
+# sure the average is actually the average. The oneway test is just not assuming
+# equal variances.
 
 
 
@@ -77,21 +88,25 @@ shapiro.test(resid(effectiveness_scale))
 
 
 
-# a.3)
-gender_t_test = t.test(EffectivenessScale ~ Gender, data = alzheimer_data)
-print(gender_t_test)
-#Welch Two Sample t-test
-#
-#data:  EffectivenessScale by Gender
-#t = -1.8365, df = 253.18, p-value = 0.06746
-#alternative hypothesis: true difference in means between group f and group m is not equal to 0
-#95 percent confidence interval:
-#  -0.35629603  0.01244215
-#sample estimates:
-#  mean in group f mean in group m 
-#-0.3946667      -0.2227397
 
-# This is the two sample t test that is testing the difference between 
+
+
+
+# a.3)
+gender_aov = aov(EffectivenessScale ~ Gender, data = alzheimer_data)
+print(gender_aov)
+#Call:
+#  aov(formula = EffectivenessScale ~ Gender, data = alzheimer_data)
+#
+#Terms:
+#  Gender Residuals
+#Sum of Squares    2.07333 168.26866
+#Deg. of Freedom         1       279
+#
+#Residual standard error: 0.7766038
+#Estimated effects may be unbalanced
+
+# This is the aov test that is testing the difference between 
 # effectiveness of the drugs like that aov test but this one will compare
 # the effectiveness between the different drugs between the genders.
 # The null hypothesis would be that there is no difference between the average
@@ -101,25 +116,27 @@ print(gender_t_test)
 # me want to reject the null hypothesis so I would do some further tests on
 # this subject
 
-shapiro_female = shapiro.test(alzheimer_data$EffectivenessScale[alzheimer_data$Gender == 'f'])
-shapiro_male = shapiro.test(alzheimer_data$EffectivenessScale[alzheimer_data$Gender == 'm'])
-
-print(shapiro_female)
+shapiro.test(resid(gender_aov))
 #Shapiro-Wilk normality test
 #
-#data:  alzheimer_data$EffectivenessScale[alzheimer_data$Gender == "f"]
-#W = 0.98311, p-value = 0.09339
-
-print(shapiro_male)
-#Shapiro-Wilk normality test
-#
-#data:  alzheimer_data$EffectivenessScale[alzheimer_data$Gender == "m"]
-#W = 0.98118, p-value = 0.04248
+#data:  resid(gender_aov)
+#W = 0.9908, p-value = 0.07489
 
 # This check is to ensure the data is normalised so I can use the welch two
 # sample t test. Since the female data is normally distributed but the male
 # p value is less than 0.05 we can say the male data is not normally distributed
 # Since I am using the welch two sample t test this is acceptable for unequal variances
+
+leveneTest(EffectivenessScale ~ Gender, data = alzheimer_data)
+#Levene's Test for Homogeneity of Variance (center = median)
+#       Df F value   Pr(>F)   
+#group   1  10.761 0.001168 **
+#      279                    
+#---
+#Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# The shapiro test is to ensure normality of the data. The levene test is
+# to ensure homogeneity of the variances between the data.
 
 
 
@@ -146,6 +163,10 @@ summary(two_way_anova)
 
 
 
+
+
+
+
 # c.2)
 two_way_anova_combined = aov(EffectivenessScale ~ DrugType * Gender, data = alzheimer_data)
 summary(two_way_anova_combined)
@@ -160,6 +181,16 @@ summary(two_way_anova_combined)
 # the drug type and gender p values back up the results from c.1 but the 
 # DrugType:Gender p value shows that the gender combined with drug type can show
 # the gender can have a variance between effectiveness of each drug.
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,9 +240,9 @@ print(t_test_result)
 # lectures
 
 # d)
-# The first assumption is that the groups are not influenced by eachother.
-# From the explanation of the question I can safely assume the two group's scores
-# are separate and not influencing eachother
+# The first assumption i can make is independence. Each group is independent of
+# eachother meaning that the grades of students from group A dont influence the
+# grades of the students from group B and vice versa.
 #
 #
 # The second assumption is that the scores in the groups are normally distributed
