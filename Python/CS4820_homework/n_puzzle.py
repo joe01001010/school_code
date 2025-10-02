@@ -4,16 +4,16 @@ from collections import deque
 
 def main():
     goal = (0,1,2,3,4,5,6,7,8)
-    start_test('Breadth-First Search', goal)
-    start_test('Depth-First Search', goal)
     start_test('Iterative Deepening Search', goal)
     start_test('Bidirectional Search', goal)
+    start_test('Breadth-First Search', goal)
+    start_test('Depth-First Search', goal)
     
     goal = (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-    start_test('Breadth-First Search', goal)
-    start_test('Depth-First Search', goal)
     start_test('Iterative Deepening Search', goal)
     start_test('Bidirectional Search', goal)
+    start_test('Breadth-First Search', goal)
+    start_test('Depth-First Search', goal)
 
 
 def start_test(test, goal, num_tests = 3):
@@ -59,12 +59,23 @@ def get_random_start(goal):
 
 
 def bfs(start, goal):
+    """
+    Classic breadth first search
+    takes 2 arguments
+    start is the initial configuration state of the board
+    goal is the desired configuration state of the board
+    This function returns the path and number of nodes expanded if a path is found
+    If no path is found it will return None and the number of nodes expanded
+    """
+    # BFS uses a queue for searching
     queue = deque([start])
     visited = set([start])
+    # Initialize the dictionary for mapping if the goal state is found
     parent = {start: None}
     nodes_expanded = 0
     
     while queue:
+        # Start searching from the front of the queue and increment the nodes_expanded by 1
         state = queue.popleft()
         nodes_expanded += 1
         if state == goal:
@@ -79,6 +90,16 @@ def bfs(start, goal):
 
 
 def dls(state, goal, depth, parent, visited, nodes_expanded):
+    """
+    Depth limited search, called by iterative depth search
+    takes 6 arguments
+    state is the current configureation of the board
+    goal is the desired configuration of the board
+    parent is the dictionary to reconstruct if the goal is found and to modify for future searches
+    visited set is to ensure we dont evaluate an already visited state of the board
+    nodes_expanded is to keep track of how many nodes we visited, this is passed as a pointer so recursive calls can increment it
+    This will return a boolean value if the goal is found it will return true else false
+    """
     nodes_expanded[0] += 1
     if state == goal:
         return True
@@ -94,12 +115,24 @@ def dls(state, goal, depth, parent, visited, nodes_expanded):
     return False
 
 
-def ids(start, goal, max_depth=50):
+def ids(start, goal, max_depth=100):
+    """
+    Iterative deepending search
+    Takes 3 arguments 
+    start is the initial state of the board
+    goal is the desired state of the board
+    max_depth is the number of allowed searches depth wise
+    This will return a path and number of nodes expanded if a path is found
+    If no path is found it will return None and the total number of nodes expanded
+    """
     total_nodes_expanded = 0
+    # Each loop will increase how deep the IDS can go
     for depth in range(max_depth):
         parent = {start: None}
         visited = set([start])
         nodes_expanded = [0]
+        # DLS is basicallf DFS except it has a depth limit
+        # returns a boolean value
         if dls(start, goal, depth, parent, visited, nodes_expanded):
             total_nodes_expanded += nodes_expanded[0]
             return reconstruct_path(parent, goal), total_nodes_expanded
@@ -107,13 +140,25 @@ def ids(start, goal, max_depth=50):
 
 
 def bds(start, goal):
+    """
+    Bi-directional search
+    takes two arguments start and goal
+    start being the current configuration of the board
+    goal being the desired and configuration of the board
+    This function will attempt to work the paths simultaneously towards eachother and meet in the middle
+    This function will reutrn the path and number of nodes expanded
+    If no path is found it will return None and number of nodes expanded
+    """
     front_start = {start: None}
     front_goal = {goal: None}
+    # Creates two queues like BFS so they can start searching from both ends towards eachother
     queue_start, queue_goal = deque([start]), deque([goal])
     visited_start, visited_goal = set([start]), set([goal])
     nodes_expanded = 0
     
+    # Runs as long as they both have options in the queue
     while queue_start and queue_goal:
+        # Start searching from the initial configuration state of the board
         state = queue_start.popleft()
         nodes_expanded += 1
         for neighbor in get_surrounding_tiles(state):
@@ -124,6 +169,7 @@ def bds(start, goal):
                 if neighbor in visited_goal:
                     return merge_paths(front_start, front_goal, neighbor), nodes_expanded
         
+        # Start searching from the goal state back towards the initial configuration state
         state = queue_goal.popleft()
         nodes_expanded += 1
 
@@ -138,6 +184,16 @@ def bds(start, goal):
 
 
 def dfs(start, goal, max_depth=1000):
+    f"""
+    depth first search algorithm takes 3 arguments
+    start being the current configuration of the puzzle
+    goal being the end state of the puzzle
+    max_depth to prevent infinite loops and adhere to the python standard limit of 1000
+    Python can recurse more than 1000 if necessary but I need to explicitly tell it to allow that
+    Will return a found path and number of nodes expanded
+    If no path is foudn it will return None and the number of nodes expanded
+    """
+    # Make the stack for dfs and set visited to the current configuration of the board
     stack = [(start, [start])]
     visited = set([start])
     nodes_expanded = 0
@@ -147,7 +203,6 @@ def dfs(start, goal, max_depth=1000):
         nodes_expanded += 1
         
         if state == goal:
-            print(f"DFS nodes expanded: {nodes_expanded}")
             return path, nodes_expanded
         
         if len(path) > max_depth:
@@ -162,17 +217,33 @@ def dfs(start, goal, max_depth=1000):
 
 
 def merge_paths(front_start, front_goal, meet):
+    """
+    Called by BDS
+    Takes 3 arguments one being the front_start that is a dictionary of the parents starting from the starting state
+    The front goal is the dictionary of parents starting from the goal state
+    The meet is the state where the search from both states meet
+    This function will return the two paths combined
+    """
     path1 = reconstruct_path(front_start, meet)
     path2 = reconstruct_path(front_goal, meet)[::-1]
     return path1 + path2[1:]
 
 
 def get_surrounding_tiles(state):
+    """
+    Takes in one argument state that it a tuple representing the current state of the board
+    This function will generate all valid moves based on the location of the 0
+    This function will return all possible valid board states after one move
+    """
     neighbors = []
+    # Calculates width and height, the sliding puzzle game will always be a square number
     size = int(len(state) ** 0.5)
+    # Gets position of the blank tile, aka 0
     zero_index = state.index(0)
+    # converts the tuple into a row column format
     row, col = divmod(zero_index, size)
     
+    # Get valid moves, without moving off the board
     moves = []
     if row > 0: 
         moves.append((-1, 0))
@@ -183,6 +254,9 @@ def get_surrounding_tiles(state):
     if col < size-1:
         moves.append((0, 1))
     
+    # Computes valid moves to see the new state
+    # Makes new_state a list of the state so we can swap values around
+    # Adds the move into neighbors array for returning all possible new states
     for dr, dc in moves:
         r, c = row + dr, col + dc
         new_index = r * size + c
@@ -194,10 +268,16 @@ def get_surrounding_tiles(state):
 
 
 def reconstruct_path(parent, state):
+    """
+    Takes two arguments, parent being the dictionary of states and the value being the state that led to it
+    The state argument is the goal state that the program reached
+    """
     path = []
+    # Will iterate until it has no more key value pairs of states
     while state is not None:
         path.append(state)
         state = parent[state]
+    # Returns the list of steps in reverse order from start to goal
     return path[::-1]
 
 
