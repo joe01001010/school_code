@@ -17,6 +17,14 @@ def main():
 
 
 def start_test(test, goal, num_tests = 3):
+    """
+    Formatting function for consistent output for all tests being run
+    Takes 3 arguments
+    test is the kind of test being run as a string
+    goal is the desired state of the board as a tuple
+    num_tests is an int identifying the number of tests to run for each search algorithm, defaults to three
+    This function doesnt return anything
+    """
     average_times = []
     average_nodes_expanded = []
 
