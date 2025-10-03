@@ -1,19 +1,23 @@
 #!/usr/bin/env python
-import random, time
+import random, time, heapq
 from collections import deque
 
 def main():
     goal = (0,1,2,3,4,5,6,7,8)
-    start_test('Iterative Deepening Search', goal)
+    start_test('A* Manhattan', goal)
+    start_test('A* Misplaced', goal)
     start_test('Bidirectional Search', goal)
     start_test('Breadth-First Search', goal)
+    start_test('Iterative Deepening Search', goal)
     start_test('Depth-First Search', goal)
     
     goal = (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-    start_test('Iterative Deepening Search', goal)
-    start_test('Bidirectional Search', goal)
-    start_test('Breadth-First Search', goal)
-    start_test('Depth-First Search', goal)
+    start_test('A* Manhattan', goal)
+    # start_test('A* Misplaced', goal)
+    # start_test('Bidirectional Search', goal)
+    # start_test('Breadth-First Search', goal)
+    # start_test('Iterative Deepening Search', goal)
+    # start_test('Depth-First Search', goal)
 
 
 def start_test(test, goal, num_tests = 3):
@@ -42,10 +46,15 @@ def start_test(test, goal, num_tests = 3):
             path_found, nodes_expanded = ids(start, goal)
         elif test == 'Bidirectional Search':
             path_found, nodes_expanded = bds(start, goal)
+        elif test == 'A* Manhattan':
+            path_found, nodes_expanded = astar(start, goal, 'manhattan')
+        elif test == 'A* Misplaced':
+            path_found, nodes_expanded = astar(start, goal, 'misplaced')
 
         print(f"Stats for run {test_num + 1}:")
         if path_found:
             print(f"Path Length: {len(path_found)}")
+            print(f"Depth: {len(path_found) - 1}")
         else:
             print("No path found")
         print(f"Time for {test}: {time.time() - start_time}")
@@ -287,6 +296,105 @@ def reconstruct_path(parent, state):
         state = parent[state]
     # Returns the list of steps in reverse order from start to goal
     return path[::-1]
+
+
+def astar(start, goal, heuristic):
+    """
+    This function takes 3 arguments
+    start is the current configuration of the puzzle
+    goal is the desired configuration of the board
+    heuristic is either manhattan or misplaced
+    this will return the path and number of nodes expanded if they are found
+    """
+    # Creates a priority queue, will always return the lowest f score first
+    open_set = []
+    heapq.heappush(open_set, (0, 0, start))
+    
+    # Dictionaries to track costs and parents
+    g_score = {start: 0}
+    parent = {start: None}
+    
+    # Always keep a visited set to ensure you dont loop needlessly
+    visited = set()
+    nodes_expanded = 0
+    
+    while open_set:
+        current_f_score, current_g_score, current_state = heapq.heappop(open_set)
+        nodes_expanded += 1
+        
+        # Skip if we've found a better path to this node
+        if current_state in visited:
+            continue
+            
+        visited.add(current_state)
+        
+        if current_state == goal:
+            return reconstruct_path(parent, current_state), nodes_expanded
+        
+        for neighbor in get_surrounding_tiles(current_state):
+            if neighbor in visited:
+                continue
+                
+            # Calculate tentative g_score
+            tentative_g = g_score[current_state] + 1
+            
+            # If this path to neighbor is better than any previous one
+            if neighbor not in g_score or tentative_g < g_score[neighbor]:
+                parent[neighbor] = current_state
+                g_score[neighbor] = tentative_g
+                
+                # Calculate f_score = g_score + heuristic
+                if heuristic == 'manhattan':
+                    h_score = manhattan_heuristic(neighbor, goal)
+                else:
+                    h_score = misplaced_tiles_heuristic(neighbor, goal)
+                    
+                # Add to the priority queue to explore later in the program if needed
+                f_score = tentative_g + h_score
+                heapq.heappush(open_set, (f_score, tentative_g, neighbor))
+    
+    return None, nodes_expanded
+
+
+def manhattan_heuristic(state, goal):
+    """
+    This function takes two arguments
+    state which is the current configuration of the board
+    goal which is the desired state of the board
+    This function will return to total distance the tiles are from their goal position
+    """
+    size = int(len(state) ** 0.5)
+    total_distance = 0
+    
+    for i, tile in enumerate(state):
+        if tile == 0:
+            continue
+            
+        # This gets the current position of the tile to check
+        current_row, current_col = divmod(i, size)
+        
+        # This gets the goal position of that same tile 
+        goal_index = goal.index(tile)
+        goal_row, goal_col = divmod(goal_index, size)
+        
+        # This adds the distance of that tile to the total distance tracking variable
+        total_distance += abs(current_row - goal_row) + abs(current_col - goal_col)
+    
+    return total_distance
+
+
+def misplaced_tiles_heuristic(state, goal):
+    """
+    This function takes two arguments
+    state which is the current configuration of the puzzle
+    goal which is the desired configuration of the goal
+    This function will return the count of how many tiles are not in their desired position
+    """
+    misplaced = 0
+    for i in range(len(state)):
+        if state[i] != goal[i] and state[i] != 0:  # don't count blank tile
+            misplaced += 1
+    return misplaced
 
 
 if __name__ == '__main__':
