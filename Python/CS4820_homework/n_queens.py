@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import math, random, time
 
+# You may need to do a pip install for these libraries but other than that ive been executing by cmd line
+# Exmaple: python ./n_puzzle.py
+
 
 def main():
     num_runs = 3
@@ -8,7 +11,6 @@ def main():
     start_test("Simulated Annealing", 8, num_runs)
     start_test("Genetic Algorithm", 4, num_runs)
     start_test("Genetic Algorithm", 8, num_runs)
-
 
 
 def start_test(test, n, runs):
@@ -63,7 +65,6 @@ def check_conflicts(state):
             elif abs(state[i] - state[j]) == abs(i - j):
                 conflicts += 1
     return conflicts
-
 
 
 def random_neighbor(state):

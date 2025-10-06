@@ -2,6 +2,9 @@
 import random, time, heapq
 from collections import deque
 
+# You may need to do a pip install for these libraries but other than that ive been executing by cmd line
+# Exmaple: python ./n_puzzle.py
+
 def main():
     goal = (0,1,2,3,4,5,6,7,8)
     start_test('A* Manhattan', goal)
@@ -13,11 +16,11 @@ def main():
     
     goal = (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
     start_test('A* Manhattan', goal)
-    # start_test('A* Misplaced', goal)
-    # start_test('Bidirectional Search', goal)
-    # start_test('Breadth-First Search', goal)
-    # start_test('Iterative Deepening Search', goal)
-    # start_test('Depth-First Search', goal)
+    start_test('A* Misplaced', goal)
+    start_test('Bidirectional Search', goal)
+    start_test('Breadth-First Search', goal)
+    start_test('Iterative Deepening Search', goal)
+    start_test('Depth-First Search', goal)
 
 
 def start_test(test, goal, num_tests = 3):
@@ -34,7 +37,11 @@ def start_test(test, goal, num_tests = 3):
 
     for test_num in range(num_tests):
         print(f"{test} test number {test_num+ 1} with {len(goal)} elements")
-        start = get_random_start(goal)
+        solvable = False
+        while not solvable:
+            start = get_random_start(goal, test_num)
+            solvable = check_if_solvable(start)
+            
         print(f"Starting configuration: {start}")
         start_time = time.time()
 
@@ -67,12 +74,49 @@ def start_test(test, goal, num_tests = 3):
 
 
 
-def get_random_start(goal):
+def get_random_start(goal, index):
     # Returns a random tuple of numbers from 0-n where 0 represents the blank space
     # n represents the highest number in the goal state
-    numbers = list(range(max(goal) + 1))
-    random.shuffle(numbers)
-    return tuple(numbers)
+    # numbers = list(range(max(goal) + 1))
+    # random.shuffle(numbers)
+    # return tuple(numbers)
+    size = len(goal)
+
+    if size == 9:  # 8-puzzle
+        numbers = list(range(max(goal) + 1))
+        random.shuffle(numbers)
+        return tuple(numbers)
+    elif size == 16:  # 15-puzzle
+        numbers = [
+                    [1, 2, 3, 7, 0, 5, 6, 11, 4, 9, 10, 15, 8, 12, 13, 14],
+                    [0, 1, 2, 3, 4, 5, 7, 11, 8, 6, 10, 15, 12, 9, 13, 14],
+                    [1, 2, 3, 4, 5, 0, 6, 7, 10,9, 11, 12, 8, 13, 14, 15],
+        ]
+    return tuple(numbers[index])
+
+
+def check_if_solvable(state):
+    """
+    This function takes a single argument
+    state is a tuple of the intial configuration to test
+    This function will returna  boolean value
+    """
+    size = int(len(state) ** 0.5)
+    # create list without the 0
+    tiles = [tile for tile in state if tile != 0]
+
+    inversions = 0
+    for i in range(len(tiles)):
+        for j in range(i + 1, len(tiles)):
+            if tiles[i] > tiles[j]:
+                inversions += 1
+
+    # This does a separate check for if the dimensions of the board are odd or even
+    if size % 2 == 1:
+        return inversions % 2 == 0
+    else:
+        row_blank = size - (state.index(0) // size)
+        return (inversions + row_blank) % 2 == 0
 
 
 def bfs(start, goal):
