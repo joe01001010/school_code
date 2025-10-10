@@ -77,22 +77,9 @@ def start_test(test, goal, num_tests = 3):
 def get_random_start(goal, index):
     # Returns a random tuple of numbers from 0-n where 0 represents the blank space
     # n represents the highest number in the goal state
-    # numbers = list(range(max(goal) + 1))
-    # random.shuffle(numbers)
-    # return tuple(numbers)
-    size = len(goal)
-
-    if size == 9:  # 8-puzzle
-        numbers = list(range(max(goal) + 1))
-        random.shuffle(numbers)
-        return tuple(numbers)
-    elif size == 16:  # 15-puzzle
-        numbers = [
-                    [1, 2, 3, 7, 0, 5, 6, 11, 4, 9, 10, 15, 8, 12, 13, 14],
-                    [0, 1, 2, 3, 4, 5, 7, 11, 8, 6, 10, 15, 12, 9, 13, 14],
-                    [1, 2, 3, 4, 5, 0, 6, 7, 10,9, 11, 12, 8, 13, 14, 15],
-        ]
-    return tuple(numbers[index])
+    numbers = list(range(max(goal) + 1))
+    random.shuffle(numbers)
+    return tuple(numbers)
 
 
 def check_if_solvable(state):
