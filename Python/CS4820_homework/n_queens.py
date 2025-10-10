@@ -138,11 +138,14 @@ def print_board(state):
     This is solely for my visualization of the problem and solution
     This function doesnt return anything
     """
-    for row in range(len(state)):
-        line = ""
-        for column in range(len(state)):
-            line += "Q " if state[row] == column else ". "
-        print(line)
+    if state:
+        for row in range(len(state)):
+            line = ""
+            for column in range(len(state)):
+                line += "Q " if state[row] == column else ". "
+            print(line)
+    else:
+        print("No solution found")
 
 
 def fitness(state):
@@ -217,7 +220,7 @@ def mutate(state, mutation_rate=0.1):
     return new_state
 
 
-def genetic_algorithm(n, population, max_generations=1000, mutation_rate=0.1):
+def genetic_algorithm(n, population, max_generations=100000, mutation_rate=0.1):
     """
     This function takes 4 arguments
     n is the n value for queens and dimensions of the board
@@ -245,7 +248,7 @@ def genetic_algorithm(n, population, max_generations=1000, mutation_rate=0.1):
         # This will select two new parents which will be used to make a new child
         # At the end of this it will make the queen go in a random row and create a new population
         new_population = []
-        for i in range(pop_size):
+        for _ in range(pop_size):
             parent1 = select_parent(population, fitness_list)
             parent2 = select_parent(population, fitness_list)
             child = crossover(parent1, parent2)
