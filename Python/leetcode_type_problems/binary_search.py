@@ -17,9 +17,7 @@ def binary_search(num_list, num_to_find):
 def main():
     num_to_find = 1001
     print("Target number:", num_to_find)
-    num_list = []
-    for i in range(1,100001,2):
-        num_list.append(i)
+    num_list = list(range(1, 9999999, 2))
 
     index_for_num = binary_search(num_list, num_to_find)
     if index_for_num != -1:
