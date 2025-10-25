@@ -3,8 +3,7 @@
 # You will potentially need to do a pip install for the imports
 # Execution: python ./sudoku_aco.py
 import numpy as np
-import random, time
-import matplotlib.pyplot as plt
+import time
 
 
 BOARD_EASY = [
