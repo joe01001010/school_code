@@ -209,11 +209,45 @@ class Sudoku:
         return sorted(self.domains[var], key=conflicts)
 
 
+    def forward_check(self, var, value, assignment):
+        """
+        This function takes 3 arguments
+        var is the current variable or cell we are working with
+        value is the number 1-9 that needs to be removed from the domains of the neighbors
+        assignment is the current state of the problem
+        This function will return none if the neighbors domain is empty
+        Else this function will return a list of tuples with the neighbor and the removed value
+        """
+        removed = []
+        for neighbor in self.neighbors[var]:
+            if neighbor in self.variables and neighbor not in assignment:
+                if value in self.domains[neighbor]:
+                    self.domains[neighbor].remove(value)
+                    removed.append((neighbor, value))
+                    if not self.domains[neighbor]:
+                        for (variable, value) in removed:
+                            self.domains[variable].add(value)
+                        return None
+        return removed
+
+
+    def restore(self, removed):
+        """
+        This function takes one argument
+        removed is the list of tuples that was removed
+        This function will add the value back into the domain
+        This function doesnt return anything
+        """
+        for (variable, value) in removed:
+            self.domains[variable].add(value)
+
+
     def backtrack(self, assignment):
         """
         This funciton is the main logic for backtracking
         This function takes one argument
         The assignmnet argument is for the current partial solution of the board
+        The first imporovement that was implemented was forward checking
         This function will return the result or None as it recurses on itself.
         This function has a base case if the number of variables is the same as the length of assignmnet
         """
@@ -225,9 +259,13 @@ class Sudoku:
         for value in self.order_domain_values(var, assignment):
             if self.is_consistent(var, value, assignment):
                 assignment[var] = value
-                result = self.backtrack(assignment)
-                if result:
-                    return result
+                removed = self.forward_check(var, value, assignment)
+                if removed is not None:
+                    result = self.backtrack(assignment)
+                    if result:
+                        return result
+                if removed is not None:
+                    self.restore(removed)
                 self.backtracks += 1
                 del assignment[var]
         return None
