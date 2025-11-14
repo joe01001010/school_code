@@ -1,0 +1,5 @@
+Run the code with 'python .\forward_checking.py'
+
+This code has a couple standard imports for time and matplot lib
+This program has a base test case setup for the bonus propblem for undergrads.
+I used a simpler version of this code to get my results from part B
