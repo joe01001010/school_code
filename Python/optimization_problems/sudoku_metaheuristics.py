@@ -3,6 +3,7 @@
 # You will potentially need to do a pip install for the imports
 # Execution: python ./sudoku_metaheuristics.py
 import time
+from collections import deque
 
 
 BOARD_EASY = [
@@ -209,27 +210,102 @@ class Sudoku:
         return sorted(self.domains[var], key=conflicts)
 
 
+    def arc_consistency3(self, assignment):
+        """
+        This function takes one argument
+        This function is desinged to further remove values from domains of the neighboring cells
+        This function will return False if a domain is empty
+        This extends forward checking by seeing the possible values all neighbors can have based on current cells
+        Else it will return true
+        """
+        # This is creating a queue of tuples to check if we need to remove them from the domains
+        # Using deque for constant time popping
+        queue = deque((X, Y) for X in self.variables if X not in assignment for Y in self.neighbors[X] if Y in self.variables and Y not in assignment)
+
+        # This will iterate and check if the domain is empty after pruning
+        # If it is empty it will retunr False
+        # Else if will potentially add another option to check into the queue
+        while queue:
+            X, Y = queue.popleft()
+            if self.prune_domain(X, Y):
+                if not self.domains[X]:
+                    return False
+                for Z in self.neighbors[X]:
+                    if Z != Y and Z in self.variables and Z not in assignment:
+                        queue.append((Z, X))
+        return True
+
+
+    def prune_domain(self, X, Y):
+        """
+        This function takes two arguments
+        X is the variable that should be arc consistent with the other variable
+        Y is the variable we are checking X against
+        This function will remove values from Xs domain that arent allowed because of Y
+        This will return a boolean value True if a change was made
+        Else it will return False
+        """
+        revised = False
+        remove_these = set()
+        for x in self.domains[X]:
+            if not any(x != y for y in self.domains[Y]):
+                remove_these.add(x)
+        if remove_these:
+            self.domains[X] -= remove_these
+            revised = True
+        return revised
+
+
+    def forward_check(self, var, value, assignment):
+        """
+        This function takes 3 arguments
+        var is the current variable or cell we are working with
+        value is the number 1-9 that needs to be removed from the domains of the neighbors
+        assignment is the current state of the problem
+        This function will return none if the neighbors domain is empty
+        Else this function will return a list of tuples with the neighbor and the removed value
+        """
+        removed = []
+        for neighbor in self.neighbors[var]:
+            if neighbor in self.variables and neighbor not in assignment:
+                if value in self.domains[neighbor]:
+                    self.domains[neighbor].remove(value)
+                    removed.append((neighbor, value))
+                    if not self.domains[neighbor]:
+                        for (variable, value) in removed:
+                            self.domains[variable].add(value)
+                        return None
+        return removed
+
+
     def backtrack(self, assignment):
         """
         This funciton is the main logic for backtracking
         This function takes one argument
         The assignmnet argument is for the current partial solution of the board
+        The first imporovement that was implemented was forward checking
+        The second improbement from forward checking is arc consistency 3
         This function will return the result or None as it recurses on itself.
         This function has a base case if the number of variables is the same as the length of assignmnet
         """
         self.nodes_expanded += 1
         if len(assignment) == len(self.variables):
             return assignment
-
         var = self.select_unassigned_variable(assignment)
+
         for value in self.order_domain_values(var, assignment):
             if self.is_consistent(var, value, assignment):
+                saved_domains = {v: set(d) for v, d in self.domains.items()}
                 assignment[var] = value
-                result = self.backtrack(assignment)
-                if result:
-                    return result
+                removed = self.forward_check(var, value, assignment)
+                if removed is not None:
+                    if self.arc_consistency3(assignment):
+                        result = self.backtrack(assignment)
+                        if result:
+                            return result
                 self.backtracks += 1
                 del assignment[var]
+                self.domains = saved_domains
         return None
 
 
@@ -246,8 +322,13 @@ def solver(board_to_solve, difficulty):
     start_time = time.time()
     solved_board = starting_board.backtrack({})
     elapsed = time.time() - start_time
-    print(f"Solved Board ({difficulty}):")
-    starting_board.display_solution(solved_board)
+
+    if solved_board is None:
+        print(f"L bozo no solution found for {difficulty} puzzle. Bad implementation, -100 aura")
+    else:
+        print(f"Solved Board ({difficulty}):")
+        starting_board.display_solution(solved_board)
+
     print(f"Nodes Expanded: {starting_board.nodes_expanded}")
     print(f"Backtracks: {starting_board.backtracks}")
     print(f"Time: {elapsed:.4f} seconds")
