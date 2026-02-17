@@ -135,6 +135,32 @@ def decode_s_type(rs1, rs2, funct3, imm):
   sys.exit(67)
 
 
+def decode_r_type(rd, rs1, rs2, funct3, funct7):
+    """
+    This function takes five arguments
+    This function will take 5 arguments: rd, rs1, rs2, funct3, funct7 that are pulled from the original instruction
+    This function will return a string of the assembly based on the bits that were extracted and sent to this function
+    This function will use the r_map dictionary to map the bits to the kind of r type instruction
+    """
+    r_map = {
+        (0b0000000, 0b000): "add",
+        (0b0100000, 0b000): "sub",
+        (0b0000000, 0b001): "sll",
+        (0b0000000, 0b010): "slt",
+        (0b0000000, 0b011): "sltu",
+        (0b0000000, 0b100): "xor",
+        (0b0000000, 0b101): "srl",
+        (0b0100000, 0b101): "sra",
+        (0b0000000, 0b110): "or",
+        (0b0000000, 0b111): "and",
+    }
+    key = (funct7, funct3)
+    if key in r_map:
+        return f"{r_map[key]} x{rd}, x{rs1}, x{rs2}"
+    print(f"unknown R-type: funct7={funct7:07b} funct3={funct3:03b}")
+    sys.exit(67)
+
+
 def decode_b_type(rs1, rs2, funct3, instruction):
   """
   This function takes 4 arguments
@@ -237,6 +263,7 @@ def main():
     write_file.write(f'RISC-V assembly instructions from {file_to_read}\n')
 
   for index, instruction in enumerate(instructions):
+    instruction = int(instruction)
     if instruction < 0:
       instruction = instruction & (2**32 - 1)
 
