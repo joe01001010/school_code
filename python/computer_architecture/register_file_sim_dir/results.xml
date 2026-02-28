@@ -1,0 +1,11 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1772308972" />
+    <testcase name="run_register_file_sim" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="20" time="0.004245758056640625" sim_time_ns="675.0" ratio_time="158982.2102425876" />
+    <testcase name="secnario_back_to_back_loads" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="71" time="0.00013566017150878906" sim_time_ns="35.0" ratio_time="257997.60984182777" />
+    <testcase name="secnario_back_to_back_alu" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="107" time="0.0002300739288330078" sim_time_ns="85.0" ratio_time="369446.4663212435" />
+    <testcase name="secnario_back_to_back_store" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="192" time="0.00014472007751464844" sim_time_ns="45.0" ratio_time="310945.10708401975" />
+    <testcase name="secnario_load_alu_store" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="245" time="0.0001595020294189453" sim_time_ns="55.0" ratio_time="344823.1988041854" />
+    <testcase name="secnario_memory_swap" classname="register_file_sim" file="/home/weibelj/git/school_code/python/computer_architecture/register_file_sim.py" lineno="306" time="0.000164031982421875" sim_time_ns="55.0" ratio_time="335300.4651162791" />
+  </testsuite>
+</testsuites>
