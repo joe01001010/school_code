@@ -8,7 +8,7 @@ try:
     from cocotb.runner import get_runner
 except ModuleNotFoundError:
     from cocotb_tools.runner import get_runner
-from cocotb.triggers import ReadOnly, RisingEdge
+from cocotb.triggers import NextTimeStep, ReadOnly, RisingEdge
 
 alu_sim_dir = os.path.abspath(os.path.join('.', 'alu_sim_dir'))
 
@@ -29,6 +29,7 @@ MASK_32 = 0xFFFFFFFF
 async def _tick_and_settle(dut):
     await RisingEdge(dut.clk)
     await ReadOnly()
+    await NextTimeStep()
 
 
 async def perform_not(dut) -> None:
