@@ -8,7 +8,7 @@ try:
     from cocotb.runner import get_runner
 except ModuleNotFoundError:
     from cocotb_tools.runner import get_runner
-from cocotb.triggers import NextTimeStep, ReadOnly, RisingEdge
+from cocotb.triggers import NextTimeStep, ReadOnly, ReadWrite, RisingEdge
 
 alu_sim_dir = os.path.abspath(os.path.join('.', 'alu_sim_dir'))
 
@@ -52,8 +52,7 @@ async def perform_negate(dut) -> None:
     :param dut: DUT object from cocotb
     :return: None
     """
-    value = int(dut.s1.value) & MASK_32
-    dut.s1.value = value
+    await ReadWrite()
     await perform_not(dut)
     not_value = int(dut.d.value) & MASK_32
 
@@ -73,6 +72,7 @@ async def perform_sub(dut) -> None:
     :param s2: Second value as described in R sub
     :return: None
     """
+    await ReadWrite()
     s1 = int(dut.s1.value) & MASK_32
     s2 = int(dut.s2.value) & MASK_32
 
@@ -94,6 +94,7 @@ async def set_gt(dut):
     :param dut:
     :return:
     """
+    await ReadWrite()
     s1 = int(dut.s1.value) & MASK_32
     s2 = int(dut.s2.value) & MASK_32
 
@@ -111,6 +112,7 @@ async def set_gte(dut):
     :param dut: DUT object from cocotb
     :return:
     """
+    await ReadWrite()
     s1 = int(dut.s1.value) & MASK_32
     s2 = int(dut.s2.value) & MASK_32
 
@@ -140,6 +142,7 @@ async def f_set_e(dut):
     :param dut:
     :return:
     """
+    await ReadWrite()
     s1 = int(dut.s1.value) & MASK_32
     s2 = int(dut.s2.value) & MASK_32
 
@@ -176,6 +179,7 @@ async def f_set_lte(dut):
     :param dut:
     :return:
     """
+    await ReadWrite()
     s1 = int(dut.s1.value) & MASK_32
     s2 = int(dut.s2.value) & MASK_32
 
@@ -203,6 +207,7 @@ async def perform_multiplication(dut):
     :param dut:
     :return:
     """
+    await ReadWrite()
     rs1 = int(dut.s1.value) & MASK_32
     rs2 = int(dut.s2.value) & MASK_32
 
@@ -254,6 +259,7 @@ async def perform_division(dut):
     :param dut:
     :return:
     """
+    await ReadWrite()
     dividend = int(dut.s1.value) & MASK_32
     divisor = int(dut.s2.value) & MASK_32
 
