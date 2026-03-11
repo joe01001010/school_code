@@ -8,7 +8,7 @@ try:
     from cocotb.runner import get_runner
 except ModuleNotFoundError:
     from cocotb_tools.runner import get_runner
-from cocotb.triggers import RisingEdge
+from cocotb.triggers import ReadOnly, RisingEdge
 
 alu_sim_dir = os.path.abspath(os.path.join('.', 'alu_sim_dir'))
 
@@ -26,6 +26,11 @@ class Funct3(Enum):
 MASK_32 = 0xFFFFFFFF
 
 
+async def _tick_and_settle(dut):
+    await RisingEdge(dut.clk)
+    await ReadOnly()
+
+
 async def perform_not(dut) -> None:
     """
     ~
@@ -36,7 +41,7 @@ async def perform_not(dut) -> None:
     dut.funct3.value = Funct3.XOR.value
     dut.funct7.value = 0
     dut.s2.value = MASK_32
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def perform_negate(dut) -> None:
@@ -55,7 +60,7 @@ async def perform_negate(dut) -> None:
     dut.funct7.value = 0
     dut.s1.value = not_value
     dut.s2.value = 1
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def perform_sub(dut) -> None:
@@ -78,7 +83,7 @@ async def perform_sub(dut) -> None:
     dut.funct7.value = 0
     dut.s1.value = s1
     dut.s2.value = neg_s2
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def set_gt(dut):
@@ -95,7 +100,7 @@ async def set_gt(dut):
     dut.funct7.value = 0
     dut.s1.value = s2
     dut.s2.value = s1
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def set_gte(dut):
@@ -117,14 +122,14 @@ async def set_gte(dut):
     dut.funct7.value = 0
     dut.s1.value = s1
     dut.s2.value = s2
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
     eq = int(dut.zero.value) & 0x1
 
     dut.funct3.value = Funct3.OR.value
     dut.funct7.value = 0
     dut.s1.value = gt
     dut.s2.value = eq
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def f_set_e(dut):
@@ -141,14 +146,14 @@ async def f_set_e(dut):
     dut.funct7.value = 0
     dut.s1.value = s1
     dut.s2.value = s2
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
     eq = int(dut.zero.value) & 0x1
 
     dut.funct3.value = Funct3.ADD.value
     dut.funct7.value = 0
     dut.s1.value = 0
     dut.s2.value = eq
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def f_set_lt(dut):
@@ -160,7 +165,7 @@ async def f_set_lt(dut):
     """
     dut.funct3.value = Funct3.SLTU.value
     dut.funct7.value = 0
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def f_set_lte(dut):
@@ -187,7 +192,7 @@ async def f_set_lte(dut):
     dut.funct7.value = 0
     dut.s1.value = lt
     dut.s2.value = eq
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def perform_multiplication(dut):
@@ -209,7 +214,7 @@ async def perform_multiplication(dut):
         dut.funct7.value = 0
         dut.s1.value = multiplier
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         lsb = int(dut.d.value) & MASK_32
 
         if lsb:
@@ -217,28 +222,28 @@ async def perform_multiplication(dut):
             dut.funct7.value = 0
             dut.s1.value = product
             dut.s2.value = multiplicand
-            await RisingEdge(dut.clk)
+            await _tick_and_settle(dut)
             product = int(dut.d.value) & MASK_32
 
         dut.funct3.value = Funct3.SLL.value
         dut.funct7.value = 0
         dut.s1.value = multiplicand
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         multiplicand = int(dut.d.value) & MASK_32
 
         dut.funct3.value = Funct3.SRL.value
         dut.funct7.value = 0
         dut.s1.value = multiplier
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         multiplier = int(dut.d.value) & MASK_32
 
     dut.funct3.value = Funct3.ADD.value
     dut.funct7.value = 0
     dut.s1.value = product
     dut.s2.value = 0
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 
 async def perform_division(dut):
@@ -255,7 +260,7 @@ async def perform_division(dut):
     dut.funct7.value = 0
     dut.s1.value = divisor
     dut.s2.value = 0
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
     if int(dut.zero.value):
         dut.s1.value = 0
         await perform_not(dut)
@@ -270,7 +275,7 @@ async def perform_division(dut):
         dut.funct7.value = 0
         dut.s1.value = dividend_shift
         dut.s2.value = 0x80000000
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         msb = int(dut.d.value) & MASK_32
 
         dut.s1.value = msb
@@ -282,28 +287,28 @@ async def perform_division(dut):
         dut.funct7.value = 0
         dut.s1.value = dividend_shift
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         dividend_shift = int(dut.d.value) & MASK_32
 
         dut.funct3.value = Funct3.SLL.value
         dut.funct7.value = 0
         dut.s1.value = remainder
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         remainder = int(dut.d.value) & MASK_32
 
         dut.funct3.value = Funct3.OR.value
         dut.funct7.value = 0
         dut.s1.value = remainder
         dut.s2.value = in_bit
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         remainder = int(dut.d.value) & MASK_32
 
         dut.funct3.value = Funct3.SLL.value
         dut.funct7.value = 0
         dut.s1.value = quotient
         dut.s2.value = 1
-        await RisingEdge(dut.clk)
+        await _tick_and_settle(dut)
         quotient = int(dut.d.value) & MASK_32
 
         dut.s1.value = remainder
@@ -321,25 +326,25 @@ async def perform_division(dut):
             dut.funct7.value = 0
             dut.s1.value = quotient
             dut.s2.value = 1
-            await RisingEdge(dut.clk)
+            await _tick_and_settle(dut)
             quotient = int(dut.d.value) & MASK_32
 
     dut.funct3.value = Funct3.ADD.value
     dut.funct7.value = 0
     dut.s1.value = quotient
     dut.s2.value = 0
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
 @cocotb.test()
 async def run_alu_sim(dut):
-    clock = Clock(dut.clk, period=10, units='ns') # This assigns the clock into the ALU
+    clock = Clock(dut.clk, period=10, unit='ns') # This assigns the clock into the ALU
     cocotb.start_soon(clock.start(start_high=False))
 
     dut.funct3.value = Funct3.ADD.value
     dut.funct7.value = 0
     dut.s1.value = 0
     dut.s2.value = 0
-    await RisingEdge(dut.clk)
+    await _tick_and_settle(dut)
 
     dut.s1.value = 0x0F0F00FF
     await perform_not(dut)
