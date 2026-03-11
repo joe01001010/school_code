@@ -203,7 +203,13 @@ async def f_set_lte(dut):
 async def perform_multiplication(dut):
     """
     In the same format as mul rd, rs1, rs2 perform multiplication.
-
+    Step 1: Initialize the registers, and product
+    Step 2: Read the least significant bit
+    Step 3: IF the bit is 1 product = product + multiplicand
+    Step 4: Shift multiplicand left by 1
+    Step 5: Shift multiplier right by one
+    Step 6: decrement counter
+    Step 7: repeat until all bits are processed
     :param dut:
     :return:
     """
@@ -255,7 +261,14 @@ async def perform_multiplication(dut):
 async def perform_division(dut):
     """
     In the same format as mul rd, rs1, rs2 perform multiplication.
-
+    Step 1: Initialize the registers, and product
+    Step 2: Shift the dividend and load divident bit into remainder
+    Step 3: Shift quotient left 1
+    Step 4: compare remainder and divisor
+    Step 5: IF remainder >= divisor subtract remainder = remainder - divisor
+    Step 6: IF subtracted, quotient LSB = 1 else 0
+    Step 7: decremtnet loop count
+    Step 8: iterate until all 32 bits have been processed
     :param dut:
     :return:
     """

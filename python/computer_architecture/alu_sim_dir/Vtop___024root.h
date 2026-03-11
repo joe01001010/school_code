@@ -1,0 +1,58 @@
+// Verilated -*- C++ -*-
+// DESCRIPTION: Verilator output: Design internal header
+// See Vtop.h for the primary calling header
+
+#ifndef VERILATED_VTOP___024ROOT_H_
+#define VERILATED_VTOP___024ROOT_H_  // guard
+
+#include "verilated.h"
+#include "verilated_threads.h"
+
+
+class Vtop__Syms;
+
+class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final {
+  public:
+
+    // DESIGN SPECIFIC STATE
+    VlUnpacked<QData/*63:0*/, 1> __VnbaTriggered;
+    IData/*31:0*/ RISCALU__DOT__d;
+    IData/*31:0*/ __Vdly__RISCALU__DOT__d;
+    CData/*2:0*/ RISCALU__DOT__funct3;
+    CData/*6:0*/ RISCALU__DOT__funct7;
+    IData/*31:0*/ RISCALU__DOT__s1;
+    IData/*31:0*/ RISCALU__DOT__s2;
+    CData/*0:0*/ RISCALU__DOT__zero;
+    VL_OUT8(zero,0,0);
+    VL_OUT(d,31,0);
+    VL_IN8(clk,0,0);
+    VL_IN8(funct3,2,0);
+    VL_IN8(funct7,6,0);
+    CData/*0:0*/ RISCALU__DOT__clk;
+    CData/*0:0*/ __VstlFirstIteration;
+    CData/*0:0*/ __VicoFirstIteration;
+    CData/*0:0*/ __Vtrigprevexpr___TOP__RISCALU__DOT__clk__0;
+    VL_IN(s1,31,0);
+    VL_IN(s2,31,0);
+    IData/*31:0*/ __VactIterCount;
+    VlUnpacked<QData/*63:0*/, 1> __VstlTriggered;
+    VlUnpacked<QData/*63:0*/, 1> __VicoTriggered;
+    VlUnpacked<QData/*63:0*/, 1> __VactTriggered;
+    VlMTaskVertex __Vm_mtaskstate_3;
+    VlMTaskVertex __Vm_mtaskstate_final__0nba;
+
+    // INTERNAL VARIABLES
+    Vtop__Syms* vlSymsp;
+    const char* vlNamep;
+
+    // CONSTRUCTORS
+    Vtop___024root(Vtop__Syms* symsp, const char* namep);
+    ~Vtop___024root();
+    VL_UNCOPYABLE(Vtop___024root);
+
+    // INTERNAL METHODS
+    void __Vconfigure(bool first);
+};
+
+
+#endif  // guard
