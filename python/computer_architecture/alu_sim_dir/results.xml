@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1773195277" />
+    <testcase name="run_alu_sim" classname="alu_sim" file="/home/weibelj/git/school_code/python/computer_architecture/alu_sim.py" lineno="345" time="0.015441417694091797" sim_time_ns="4230.0" ratio_time="273938.57764876634" />
+  </testsuite>
+</testsuites>
