@@ -349,16 +349,22 @@ async def run_alu_sim(dut):
 
     dut.s1.value = 0x0F0F00FF
     await perform_not(dut)
-    assert int(dut.d.value) == ((~0x0F0F00FF) & MASK_32)
+    got = int(dut.d.value) & MASK_32
+    expected = (~0x0F0F00FF) & MASK_32
+    assert got == expected, f"perform_not got 0x{got:08X}, expected 0x{expected:08X}"
 
     dut.s1.value = 0x00003039
     await perform_negate(dut)
-    assert int(dut.d.value) == ((-0x00003039) & MASK_32)
+    got = int(dut.d.value) & MASK_32
+    expected = (-0x00003039) & MASK_32
+    assert got == expected, f"perform_negate got 0x{got:08X}, expected 0x{expected:08X}"
 
     dut.s1.value = 500
     dut.s2.value = 123
     await perform_sub(dut)
-    assert int(dut.d.value) == ((500 - 123) & MASK_32)
+    got = int(dut.d.value) & MASK_32
+    expected = (500 - 123) & MASK_32
+    assert got == expected, f"perform_sub got 0x{got:08X}, expected 0x{expected:08X}"
 
     dut.s1.value = 9
     dut.s2.value = 8
@@ -400,12 +406,16 @@ async def run_alu_sim(dut):
     dut.s1.value = mul_s1
     dut.s2.value = mul_s2
     await perform_multiplication(dut)
-    assert int(dut.d.value) == ((mul_s1 * mul_s2) & MASK_32)
+    got = int(dut.d.value) & MASK_32
+    expected = (mul_s1 * mul_s2) & MASK_32
+    assert got == expected, f"perform_multiplication got 0x{got:08X}, expected 0x{expected:08X}"
 
     dut.s1.value = 100
     dut.s2.value = 7
     await perform_division(dut)
-    assert int(dut.d.value) == (100 // 7)
+    got = int(dut.d.value) & MASK_32
+    expected = (100 // 7) & MASK_32
+    assert got == expected, f"perform_division got 0x{got:08X}, expected 0x{expected:08X}"
 
 
 def test_via_cocotb():
