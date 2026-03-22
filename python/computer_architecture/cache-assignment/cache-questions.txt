@@ -1,0 +1,64 @@
+1. Size of the cache at each level. Copied and pasted from $(lscpu)
+L1d:                    768 KiB (16 instances)
+L1i:                    512 KiB (16 instances)
+L2:                     32 MiB (16 instances)
+L3:                     36 MiB (1 instance)
+
+L1d has 48Kib per core, the L1i has 32Kib per core, L2 has 2Mib per core and the L3 is 36Mib all shared.
+The virtual machine I am using uses 39-bit physical addresses and 48-bit virtual addresses.
+
+The three common file types are a text file which is expected to be about 10Kib to 1 Mib, a JPEG which is about 2Mib to 8Mib,
+and an MP4 which is usually over 100Mib up to a Gib. The txt file and JPEG will fit into the 36MB L3 cache but the MP4 won't.
+This means the CPU will be placed in memory instead of the caches.
+Which will take longer to retrieve because it has to be wrote to main memory and then it will have to be retrieved.
+
+
+2. Choose an arbitrary address (within the address size of your machine) to use as the starting address for your arrays. Describe your choice of cache layout (Direct, SA, FA).
+
+My starting address is 0x10000000 and I am choosing direct mapped for simplicity.
+Direct mapped is simpler because each block of mempory will map to one cache line which is  based on the index of bits. The index portion of the address will show which cache line is being accessed. This will then compare the tage to determine if the access was a hit or a miss. 
+
+For this assignment I am using a cache size of 4096 bytes and a block size of 64 bytes which results in 64 cache lines.
+
+
+3. 
+Type         Rows     Cols   Row Miss Rate   Col Miss Rate
+--------------------------------------------------------------
+char           64       64        0.015625        0.015625
+short        4096     4096        0.031250        1.000000
+int            32       32        0.062500        0.062500
+long         2048     2304        0.125000        1.000000
+
+
+4. Writeup for random accesses.
+The miss rate for accessing smaller elements is lower than with larger numbers. This has to do with the cache holds a line with fewer values so using that line multiple time drops because there are less elements on that line. 
+
+Random Experiments:
+----------------------------------------------------------------------------------------------------
+Type: char
+Element Size: 1
+Average Miss Rate: 0.5939966666666666
+Minimum Miss Rate: 0.586
+Maximum Miss Rate: 0.6034
+Standard Deviation Miss Rate: 0.004750191808992795
+====================================================================================================
+Type: short
+Element Size: 2
+Average Miss Rate: 0.7960733333333333
+Minimum Miss Rate: 0.7888
+Maximum Miss Rate: 0.8047
+Standard Deviation Miss Rate: 0.004051578567532526
+====================================================================================================
+Type: int
+Element Size: 4
+Average Miss Rate: 0.8975433333333334
+Minimum Miss Rate: 0.8903
+Maximum Miss Rate: 0.9047
+Standard Deviation Miss Rate: 0.003152425873654908
+====================================================================================================
+Type: long
+Element Size: 8
+Average Miss Rate: 0.9492133333333334
+Minimum Miss Rate: 0.9442
+Maximum Miss Rate: 0.9534
+Standard Deviation Miss Rate: 0.002098369737571416

@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+
+import random
+import statistics
+
+from direct_mapped_cache import DirectMappedCache
+
+
+def random_addresses(base_address, total_range, element_size, num_accesses):
+  """
+  This function takes four arguments
+  base_address is the starting address in int format
+  total_range is the range in Mib expresses as an int
+  element_size is the size of the elemnts expressed as an int
+  num_accesses is an int that representts the number of times the address was accessed
+  This function will yield the start address + when it was accesses times the elemnt size
+  """
+  half_range = total_range // 2
+  start_address = base_address - half_range
+  end_address = base_address + half_range
+
+  start_address -= (start_address % half_range)
+  end_address -= (base_address % element_size)
+  num_elements = (end_address - start_address) // element_size
+
+  for access in range(num_accesses):
+    k = random.randrange(num_accesses):
+    yield start_address + (k * element_size)
+
+
+def row_major_addresses(base_addr: int, rows: int, cols: int, elem_size: int):
+  for i in range(rows):
+    for j in range(cols):
+      yield base_addr + ((i * cols) + j) * elem_size
+
+
+def column_major_addresses(base_addr: int, rows: int, cols: int, elem_size: int):
+  for j in range(cols):
+    for i in range(rows):
+      yield base_addr + ((i * cols) + j) * elem_size
+
+
+def run_access_pattern(cache, addresses):
+  cache.reset()
+  for addr in addresses:
+    cache.access(addr)
+  return {
+    "hits": cache.hits,
+    "misses": cache.misses,
+    "miss_rate": cache.miss_rate()
+  }
+
+
+def main():
+  results = []
+  base_address = 0x10000000
+  cache = DirectMappedCache()
+  
+  experiments = [
+    ('char', 64, 64, 1),
+    ('short', 4096, 4096, 2),
+    ('int', 32, 32, 3),
+    ('long', 2048, 2304, 4),
+  ]
+
+  for data_type, rows, columns, element_size, in experiments:
+    row_response = run_access_pattern(cache, row_major_addresses(base_address, rows, columns, element_size))
+    column_response = run_access_pattern(cache, column_major_addresses(base_address, rows, columns, element_size))
+
+    results.append({
+      'type': data_type,
+      'rows': rows,
+      'columns': columns,
+      'element_size': element_size,
+      'row_miss_rate': row_response['miss_rate'],
+      'column_miss_rate': column_response['miss_rate'],
+      'row_hits': row_response['hits'],
+      'row_misses': row_response['misses'],
+      'columns_hits': column_response['hits'],
+      'columns_misses': column_response['misses'],
+    })
+
+  print(f"{'Type':<8} {'Rows':>8} {'Cols':>8} {'Row Miss Rate':>15} {'Col Miss Rate':>15}")
+  print("-" * 62)
+  for r in results:
+    print(f"{r['type']:<8} {r['rows']:>8} {r['columns']:>8} "
+        f"{r['row_miss_rate']:>15.6f} {r['column_miss_rate']:>15.6f}")
+
+
+if __name__ == '__main__':
+  main()
