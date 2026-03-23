@@ -15,11 +15,24 @@ class Instruction:
 
 
 def sign_extend(value, bits):
+    """
+    This function takes 2 arguments
+    value is an int that represents the immediate value before sign extension
+    bits is an int that represents the number of bits in the original immediate field
+    This function will convert the provided immediate value into its signed integer form
+    This function will return an int
+    """
     sign_bit = 1 << (bits - 1)
     return (value & (sign_bit - 1)) - (value & sign_bit)
 
 
 def decode_instruction(inst):
+    """
+    This function takes 1 argument
+    inst is an int that represents a 32-bit RISC-V instruction word
+    This function will decode the instruction bits into an Instruction dataclass for the supported operations
+    This function will return an Instruction
+    """
     opcode = inst & 0x7F
     rd = (inst >> 7) & 0x1F
     funct3 = (inst >> 12) & 0x7
@@ -67,6 +80,12 @@ def decode_instruction(inst):
 
 
 def load_instructions_from_bin(file_path):
+    """
+    This function takes 1 argument
+    file_path is a str that represents the path to the binary instruction file
+    This function will read the binary file four bytes at a time and load the decoded instructions into instruction memory
+    This function will return a dict
+    """
     instruction_memory = {}
 
     with open(file_path, "rb") as f:

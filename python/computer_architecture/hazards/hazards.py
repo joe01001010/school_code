@@ -53,6 +53,12 @@ INSTRUCTIONS_DYNAMIC = [
 
 
 def pipeline_empty(cpu):
+    """
+    This function takes 1 argument
+    cpu is a Stages that represents the current pipeline simulator state
+    This function will check whether all four pipeline registers currently contain nop instructions
+    This function will return a bool
+    """
     return (
         cpu.if_id.instruction.is_nop
         and cpu.id_ex.instruction.is_nop
@@ -62,6 +68,12 @@ def pipeline_empty(cpu):
 
 
 def main(file_path):
+    """
+    This function takes 1 argument
+    file_path is a str that represents the binary file path to create and simulate
+    This function will choose the correct instruction list, write the binary file, run the pipeline simulation, and write the csv output
+    This function doesn't return anything
+    """
     rows = []
     
     if 'unrolled' in file_path:
