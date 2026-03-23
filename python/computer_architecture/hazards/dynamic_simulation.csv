@@ -1,0 +1,14 @@
+Cycle,Instr,Op,Fct3,Rd,Rs1,Rs2,RegWrite,ALUSrc,FwdA,FwdB,MemRd,MemWr,WBSel,bne
+0,,,,,,,False,False,,,False,False,alu,False
+1,,,,,,,False,False,,,False,False,alu,False
+2,238339,lw,2,6,7,,True,True,,,True,False,mem,False
+3,4432899,lw,2,8,7,,True,True,,,True,False,mem,False
+4,8627331,lw,2,9,7,,True,True,,,True,False,mem,False
+5,1245971,addi,0,6,6,,True,True,,,False,False,alu,False
+6,1311763,addi,0,8,8,,True,True,,,False,False,alu,False
+7,1344659,addi,0,9,9,,True,True,,,False,False,alu,False
+8,6529059,sw,2,,7,6,False,True,,,False,True,alu,False
+9,8626723,sw,2,,7,8,False,True,,,False,True,alu,False
+10,9675811,sw,2,,7,9,False,True,,,False,True,alu,False
+11,,,,,,,False,False,,,False,False,alu,False
+12,,,,,,,False,False,,,False,False,alu,False
