@@ -1,11 +1,8 @@
 CC=gcc
 CFLAGS=-std=c11 -Wall -Wextra -g
-IDIR =.
 
 ODIR=.
-
-_DEPS = list.h
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+DEPS = list.h
 
 _OBJ = list.o list_test.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -19,4 +16,4 @@ list_test: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+	rm -f $(ODIR)/*.o
