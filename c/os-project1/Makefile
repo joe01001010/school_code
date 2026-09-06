@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-std=c11 -Wall -Wextra -g
 IDIR =.
 
-ODIR=obj
+ODIR=.
 
 _DEPS = list.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -13,10 +13,10 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-list_test_make: $(OBJ)
+list_test: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 .PHONY: clean
 
 clean:
-	rm -f 
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
